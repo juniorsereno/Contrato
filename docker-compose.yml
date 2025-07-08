@@ -1,7 +1,6 @@
 services:
   contract-generator:
     build: .
-    container_name: casa-da-ana-contracts
     restart: unless-stopped
     environment:
       - PORT=5000
