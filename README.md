@@ -105,7 +105,11 @@ Content-Type: application/json
   "numero_do_cpf": "123.456.789-00",
   "telefone_celular": "(61) 99999-9999",
   "email": "joao@email.com",
-  "endereco": "Rua das Flores, 123, Brasília-DF"
+  "endereco": "Rua das Flores, 123, Brasília-DF",
+  "qtd_noites": 7,
+  "dia_inicio": "15/01/2024",
+  "dia_fim": "22/01/2024",
+  "valor_locacao": "R$ 2.100,00"
 }
 ```
 
@@ -161,7 +165,11 @@ curl -X POST http://localhost:5000/generate-contract \
     "numero_do_cpf": "987.654.321-00",
     "telefone_celular": "(61) 88888-8888",
     "email": "maria@email.com",
-    "endereco": "Av. Central, 456, Brasília-DF"
+    "endereco": "Av. Central, 456, Brasília-DF",
+    "qtd_noites": 5,
+    "dia_inicio": "10/02/2024",
+    "dia_fim": "15/02/2024", 
+    "valor_locacao": "R$ 1.500,00"
   }'
 ```
 

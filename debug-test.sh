@@ -88,7 +88,11 @@ contract_response=$(curl -s -w "HTTPSTATUS:%{http_code}" -X POST "$API_URL/gener
     "numero_do_cpf": "123.456.789-00",
     "telefone_celular": "(61) 99999-9999",
     "email": "joao.debug@email.com",
-    "endereco": "Rua das Flores, 123, Asa Norte, Brasília-DF, CEP: 70000-000"
+    "endereco": "Rua das Flores, 123, Asa Norte, Brasília-DF, CEP: 70000-000",
+    "qtd_noites": 7,
+    "dia_inicio": "15/01/2024",
+    "dia_fim": "22/01/2024",
+    "valor_locacao": "R$ 2.100,00"
   }')
 
 contract_http_code=$(echo $contract_response | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
@@ -155,7 +159,11 @@ simple_response=$(curl -s -w "HTTPSTATUS:%{http_code}" -X POST "$API_URL/generat
     "numero_do_cpf": "00000000000",
     "telefone_celular": "61999999999",
     "email": "test@test.com",
-    "endereco": "Test Address"
+    "endereco": "Test Address",
+    "qtd_noites": 3,
+    "dia_inicio": "01/01/2024",
+    "dia_fim": "04/01/2024",
+    "valor_locacao": "R$ 900,00"
   }')
 
 simple_http_code=$(echo $simple_response | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')

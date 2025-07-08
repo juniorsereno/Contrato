@@ -30,7 +30,11 @@ class ContractService:
             'numero_do_cpf',
             'telefone_celular',
             'email',
-            'endereco'
+            'endereco',
+            'qtd_noites',
+            'dia_inicio',
+            'dia_fim',
+            'valor_locacao'
         ]
         
         missing_fields = []
@@ -64,7 +68,12 @@ class ContractService:
                 '{{ numero do cpf }}': dados_locatario['numero_do_cpf'],
                 '{{ telefone celular }}': dados_locatario['telefone_celular'],
                 '{{ e-mail }}': dados_locatario['email'],
-                '{{ endereco }}': dados_locatario['endereco']
+                '{{ endereco }}': dados_locatario['endereco'],
+                '{{ qtd_noites }}': str(dados_locatario['qtd_noites']),
+                '{{ dia_inicio }}': dados_locatario['dia_inicio'],
+                '{{ dia_fim }}': dados_locatario['dia_fim'],
+                '{{ valor_locacao }}': dados_locatario['valor_locacao'],
+                '{{ valor_locacao/2 }}': self._calculate_half_value(dados_locatario['valor_locacao'])
             }
             
             # Gera nome do arquivo
@@ -90,6 +99,38 @@ class ContractService:
         """
         nome_limpo = "".join(c if c.isalnum() or c in (' ', '_') else '_' for c in nome).rstrip()
         return nome_limpo.replace(' ', '_')
+    
+    def _calculate_half_value(self, valor_string):
+        """
+        Calcula metade do valor da locação, tratando diferentes formatos
+        """
+        try:
+            # Remove símbolos e converte para float
+            valor_limpo = valor_string
+            if isinstance(valor_limpo, str):
+                # Remove R$, pontos de milhares e converte vírgula para ponto
+                valor_limpo = valor_limpo.replace('R$', '').replace(' ', '').strip()
+                # Se tem vírgula, trata como separador decimal brasileiro
+                if ',' in valor_limpo:
+                    if valor_limpo.count('.') > 0 and valor_limpo.count(',') == 1:
+                        # Formato: 1.000,50 (brasileiro)
+                        valor_limpo = valor_limpo.replace('.', '').replace(',', '.')
+                    else:
+                        # Formato: 1000,50
+                        valor_limpo = valor_limpo.replace(',', '.')
+                
+                valor_float = float(valor_limpo)
+            else:
+                valor_float = float(valor_string)
+            
+            metade = valor_float / 2
+            
+            # Formata de volta para o padrão brasileiro
+            return f"R$ {metade:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+            
+        except (ValueError, AttributeError) as e:
+            logger.warning(f"Erro ao calcular metade do valor '{valor_string}': {e}")
+            return "R$ 0,00"
     
     def _fill_contract_template(self, dados_template, output_filename):
         """

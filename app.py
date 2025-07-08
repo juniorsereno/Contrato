@@ -43,6 +43,10 @@ def generate_contract():
     - telefone_celular: string (obrigatório)
     - email: string (obrigatório)
     - endereco: string (obrigatório)
+    - qtd_noites: number (obrigatório)
+    - dia_inicio: string (obrigatório) - formato: DD/MM/AAAA
+    - dia_fim: string (obrigatório) - formato: DD/MM/AAAA
+    - valor_locacao: string (obrigatório) - formato: R$ 1.000,00
     """
     try:
         # Verifica se o request tem JSON
@@ -122,7 +126,11 @@ def api_docs():
                     'numero_do_cpf',
                     'telefone_celular',
                     'email',
-                    'endereco'
+                    'endereco',
+                    'qtd_noites',
+                    'dia_inicio',
+                    'dia_fim',
+                    'valor_locacao'
                 ],
                 'example': {
                     'nome_do_locatario': 'João Silva',
@@ -133,7 +141,11 @@ def api_docs():
                     'numero_do_cpf': '123.456.789-00',
                     'telefone_celular': '(61) 99999-9999',
                     'email': 'joao@email.com',
-                    'endereco': 'Rua das Flores, 123, Brasília-DF'
+                    'endereco': 'Rua das Flores, 123, Brasília-DF',
+                    'qtd_noites': 7,
+                    'dia_inicio': '15/01/2024',
+                    'dia_fim': '22/01/2024',
+                    'valor_locacao': 'R$ 2.100,00'
                 }
             },
             'GET /health': {
