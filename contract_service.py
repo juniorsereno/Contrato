@@ -144,7 +144,7 @@ class ContractService:
             payload = {
                 "number": self.phone_number,
                 "mediatype": "document",
-                "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "mimetype": "document/docx",
                 "fileName": contract_filename,
                 "media": encoded_string,
                 "caption": f"Contrato Casa da Ana x {nome_locatario}"

@@ -73,7 +73,7 @@ def enviar_contrato_por_api(caminho_arquivo_docx, nome_locatario, nome_arquivo_g
     payload = {
         "number": "556181435045@s.whatsapp.net", # Número fixo conforme solicitado
         "mediatype": "document",
-        "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", # Mimetype correto para docx
+        "mimetype": "document/docx", # Mimetype correto para docx
         "fileName": nome_arquivo_gerado, # Nome do arquivo que será enviado
         "media": encoded_string,
         "caption": f"Contrato Casa da Ana x {nome_locatario}" # Legenda dinâmica
