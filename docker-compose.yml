@@ -17,7 +17,7 @@ services:
       # Mount template file to ensure it's available
       - ./CONTRATO Casa da Ana.docx:/app/CONTRATO Casa da Ana.docx:ro
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3

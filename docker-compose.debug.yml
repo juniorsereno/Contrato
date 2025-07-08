@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  contract-generator-debug:
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    container_name: casa-da-ana-debug
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DEBUG=true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - debug-network
+
+networks:
+  debug-network:
+    driver: bridge 
