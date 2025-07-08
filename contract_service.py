@@ -10,13 +10,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ContractService:
-    def __init__(self, api_url=None, api_key=None, phone_number=None):
+    def __init__(self, webhook_url=None):
         """
-        Inicializa o serviço de contrato com configurações da Evolution API
+        Inicializa o serviço de contrato com configurações do webhook
         """
-        self.api_url = api_url or os.getenv('EVOLUTION_API_URL', 'https://evolution.criativamaisdigital.com.br/message/sendMedia/criativa-suporte')
-        self.api_key = api_key or os.getenv('EVOLUTION_API_KEY', 'D2D6BA530A73-4DF0-8AB3-78BD2C514C12')
-        self.phone_number = phone_number or os.getenv('PHONE_NUMBER', '556181435045@s.whatsapp.net')
+        self.webhook_url = webhook_url or os.getenv('WEBHOOK_URL', 'https://webh.criativamaisdigital.com.br/webhook/c1d01bf8-6d34-44ee-9100-2923b5fb7876')
         self.template_path = "CONTRATO Casa da Ana.docx"
     
     def validate_contract_data(self, dados):
@@ -127,9 +125,9 @@ class ContractService:
             logger.error(f"Erro ao preencher template: {str(e)}")
             return False
     
-    def send_contract_via_api(self, contract_filename, nome_locatario):
+    def send_contract_via_webhook(self, contract_filename, nome_locatario):
         """
-        Envia o contrato via Evolution API
+        Envia o contrato via webhook
         """
         try:
             # Lê e codifica o arquivo
@@ -137,27 +135,25 @@ class ContractService:
                 encoded_string = base64.b64encode(docx_file.read()).decode('utf-8')
             
             headers = {
-                'Content-Type': 'application/json',
-                'apikey': self.api_key
+                'Content-Type': 'application/json'
             }
             
             payload = {
-                "number": self.phone_number,
-                "mediatype": "document",
-                "mimetype": "document/docx",
-                "fileName": contract_filename,
-                "media": encoded_string,
-                "caption": f"Contrato Casa da Ana x {nome_locatario}"
+                "filename": contract_filename,
+                "base64": encoded_string,
+                "locatario": nome_locatario,
+                "caption": f"Contrato Casa da Ana x {nome_locatario}",
+                "mimetype": "document/docx"
             }
 
-            logger.info(f"Enviando contrato para {self.phone_number}...")
-            response = requests.post(self.api_url, headers=headers, json=payload, timeout=30)
+            logger.info(f"Enviando contrato via webhook para: {nome_locatario}")
+            response = requests.post(self.webhook_url, headers=headers, json=payload, timeout=30)
             response.raise_for_status()
             
-            logger.info(f"Resposta da API - Status: {response.status_code}")
+            logger.info(f"Resposta do webhook - Status: {response.status_code}")
             
             if response.status_code in [200, 201]:
-                logger.info("Contrato enviado com sucesso!")
+                logger.info("Contrato enviado com sucesso via webhook!")
                 # Remove o arquivo após envio bem-sucedido
                 try:
                     os.remove(contract_filename)
@@ -166,11 +162,11 @@ class ContractService:
                     logger.warning(f"Não foi possível remover arquivo temporário: {e}")
                 return True
             else:
-                logger.error(f"Falha ao enviar contrato. Status: {response.status_code}")
+                logger.error(f"Falha ao enviar contrato via webhook. Status: {response.status_code}")
                 return False
                 
         except requests.exceptions.RequestException as e:
-            logger.error(f"Erro na requisição para a API: {str(e)}")
+            logger.error(f"Erro na requisição para o webhook: {str(e)}")
             return False
         except Exception as e:
             logger.error(f"Erro inesperado ao enviar contrato: {str(e)}")
@@ -184,8 +180,8 @@ class ContractService:
             # Gera o contrato
             contract_filename = self.generate_contract(dados_locatario)
             
-            # Envia via API
-            success = self.send_contract_via_api(contract_filename, dados_locatario['nome_do_locatario'])
+            # Envia via webhook
+            success = self.send_contract_via_webhook(contract_filename, dados_locatario['nome_do_locatario'])
             
             return {
                 'success': success,

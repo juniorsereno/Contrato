@@ -97,10 +97,9 @@ def get_config():
     Endpoint para verificar configurações (sem expor dados sensíveis)
     """
     return jsonify({
-        'api_url_configured': bool(os.getenv('EVOLUTION_API_URL')),
-        'api_key_configured': bool(os.getenv('EVOLUTION_API_KEY')),
-        'phone_number_configured': bool(os.getenv('PHONE_NUMBER')),
-        'template_exists': os.path.exists('CONTRATO Casa da Ana.docx')
+        'webhook_url_configured': bool(os.getenv('WEBHOOK_URL')),
+        'template_exists': os.path.exists('CONTRATO Casa da Ana.docx'),
+        'service_type': 'webhook'
     }), 200
 
 @app.route('/api-docs', methods=['GET'])

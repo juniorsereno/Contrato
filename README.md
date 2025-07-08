@@ -1,12 +1,12 @@
 # 🏠 Gerador de Contratos Casa da Ana - API v2.0
 
-Sistema automatizado para geração e envio de contratos de locação via WhatsApp usando Evolution API.
+Sistema automatizado para geração e envio de contratos de locação via webhook.
 
 ## 🚀 Funcionalidades
 
 - ✅ API REST para geração de contratos
 - ✅ Preenchimento automático de template DOCX
-- ✅ Envio automático via WhatsApp (Evolution API)
+- ✅ Envio automático via webhook
 - ✅ Containerizado com Docker
 - ✅ Pronto para deploy no EasyPanel
 - ✅ Health check e monitoramento
@@ -16,7 +16,7 @@ Sistema automatizado para geração e envio de contratos de locação via WhatsA
 
 - Docker e Docker Compose
 - Template do contrato (`CONTRATO Casa da Ana.docx`)
-- Acesso à Evolution API configurada
+- Webhook configurado para recebimento dos contratos
 
 ## 🔧 Configuração
 
@@ -36,10 +36,8 @@ nano .env
 ### 2. Variáveis de Ambiente
 
 ```env
-# Configurações da Evolution API
-EVOLUTION_API_URL=https://evolution.criativamaisdigital.com.br/message/sendMedia/criativa-suporte
-EVOLUTION_API_KEY=D2D6BA530A73-4DF0-8AB3-78BD2C514C12
-PHONE_NUMBER=556181435045@s.whatsapp.net
+# Configurações do Webhook
+WEBHOOK_URL=https://webh.criativamaisdigital.com.br/webhook/c1d01bf8-6d34-44ee-9100-2923b5fb7876
 
 # Configurações da aplicação
 PORT=5000
@@ -137,10 +135,9 @@ GET /config
 **Resposta:**
 ```json
 {
-  "api_url_configured": true,
-  "api_key_configured": true,
-  "phone_number_configured": true,
-  "template_exists": true
+  "webhook_url_configured": true,
+  "template_exists": true,
+  "service_type": "webhook"
 }
 ```
 
