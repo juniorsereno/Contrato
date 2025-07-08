@@ -60,6 +60,7 @@ class ContractService:
             
             # Converte os dados para o formato esperado pelo template
             dados_template = {
+                # Variáveis originais
                 '{{ nome do locatário }}': dados_locatario['nome_do_locatario'],
                 '{{ estado civil }}': dados_locatario['estado_civil'],
                 '{{ nacionalidade }}': dados_locatario['nacionalidade'],
@@ -69,11 +70,27 @@ class ContractService:
                 '{{ telefone celular }}': dados_locatario['telefone_celular'],
                 '{{ e-mail }}': dados_locatario['email'],
                 '{{ endereco }}': dados_locatario['endereco'],
+                
+                # Novas variáveis - testando diferentes formatos
                 '{{ qtd_noites }}': str(dados_locatario['qtd_noites']),
+                '{{qtd_noites}}': str(dados_locatario['qtd_noites']),  # Sem espaços
+                '{{ qtd noites }}': str(dados_locatario['qtd_noites']),  # Com espaço
+                
                 '{{ dia_inicio }}': dados_locatario['dia_inicio'],
+                '{{dia_inicio}}': dados_locatario['dia_inicio'],  # Sem espaços
+                '{{ dia inicio }}': dados_locatario['dia_inicio'],  # Com espaço
+                
                 '{{ dia_fim }}': dados_locatario['dia_fim'],
+                '{{dia_fim}}': dados_locatario['dia_fim'],  # Sem espaços
+                '{{ dia fim }}': dados_locatario['dia_fim'],  # Com espaço
+                
                 '{{ valor_locacao }}': dados_locatario['valor_locacao'],
-                '{{ valor_locacao/2 }}': self._calculate_half_value(dados_locatario['valor_locacao'])
+                '{{valor_locacao}}': dados_locatario['valor_locacao'],  # Sem espaços
+                '{{ valor locacao }}': dados_locatario['valor_locacao'],  # Com espaço
+                
+                '{{ valor_locacao/2 }}': self._calculate_half_value(dados_locatario['valor_locacao']),
+                '{{valor_locacao/2}}': self._calculate_half_value(dados_locatario['valor_locacao']),  # Sem espaços
+                '{{ valor locacao/2 }}': self._calculate_half_value(dados_locatario['valor_locacao']),  # Com espaço
             }
             
             # Gera nome do arquivo
@@ -138,28 +155,62 @@ class ContractService:
         """
         try:
             document = Document(self.template_path)
+            substituicoes_realizadas = {}
 
             # Itera sobre todos os parágrafos do documento
             for paragraph in document.paragraphs:
-                for key, value in dados_template.items():
-                    if key in paragraph.text:
-                        for run in paragraph.runs:
-                            if key in run.text:
-                                run.text = run.text.replace(key, value)
+                original_text = paragraph.text
+                if '{{' in original_text:
+                    logger.info(f"Parágrafo com variáveis encontrado: {original_text}")
+                    
+                    for key, value in dados_template.items():
+                        if key in paragraph.text:
+                            # Substituição mais robusta - reconstrói o parágrafo
+                            full_text = paragraph.text
+                            if key in full_text:
+                                new_text = full_text.replace(key, str(value))
+                                if new_text != full_text:
+                                    # Limpa o parágrafo e adiciona o novo texto
+                                    paragraph.clear()
+                                    run = paragraph.add_run(new_text)
+                                    substituicoes_realizadas[key] = value
+                                    logger.info(f"Substituído: '{key}' → '{value}'")
             
             # Itera sobre todas as tabelas do documento (se houver)
             for table in document.tables:
                 for row in table.rows:
                     for cell in row.cells:
                         for paragraph in cell.paragraphs:
-                            for key, value in dados_template.items():
-                                if key in paragraph.text:
-                                    for run in paragraph.runs:
-                                        if key in run.text:
-                                            run.text = run.text.replace(key, value)
+                            original_text = paragraph.text
+                            if '{{' in original_text:
+                                logger.info(f"Célula com variáveis encontrada: {original_text}")
+                                
+                                for key, value in dados_template.items():
+                                    if key in paragraph.text:
+                                        # Substituição mais robusta - reconstrói o parágrafo
+                                        full_text = paragraph.text
+                                        if key in full_text:
+                                            new_text = full_text.replace(key, str(value))
+                                            if new_text != full_text:
+                                                # Limpa o parágrafo e adiciona o novo texto
+                                                paragraph.clear()
+                                                run = paragraph.add_run(new_text)
+                                                substituicoes_realizadas[key] = value
+                                                logger.info(f"Substituído em tabela: '{key}' → '{value}'")
             
             document.save(output_filename)
             logger.info(f"Contrato gerado: {output_filename}")
+            logger.info(f"Total de substituições realizadas: {len(substituicoes_realizadas)}")
+            
+            # Log das variáveis que não foram substituídas
+            variaveis_nao_substituidas = []
+            for key in dados_template.keys():
+                if key not in substituicoes_realizadas and key.startswith('{{') and key.endswith('}}'):
+                    variaveis_nao_substituidas.append(key)
+            
+            if variaveis_nao_substituidas:
+                logger.warning(f"Variáveis não encontradas no template: {variaveis_nao_substituidas}")
+            
             return True
             
         except Exception as e:
