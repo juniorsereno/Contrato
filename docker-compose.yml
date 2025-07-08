@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  contract-generator:
+    build: .
+    container_name: casa-da-ana-contracts
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DEBUG=false
+      - EVOLUTION_API_URL=${EVOLUTION_API_URL:-https://evolution.criativamaisdigital.com.br/message/sendMedia/comercial-criativa}
+      - EVOLUTION_API_KEY=${EVOLUTION_API_KEY:-60418014C55C-49C2-BA7D-1FBD30596AE7}
+      - PHONE_NUMBER=${PHONE_NUMBER:-556182002294@s.whatsapp.net}
+    volumes:
+      # Mount template file to ensure it's available
+      - ./CONTRATO Casa da Ana.docx:/app/CONTRATO Casa da Ana.docx:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - contract-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  contract-network:
+    driver: bridge 
