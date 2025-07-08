@@ -61,9 +61,9 @@ def enviar_contrato_por_api(caminho_arquivo_docx, nome_locatario, nome_arquivo_g
         print(f"Erro ao ler e codificar o arquivo DOCX para Base64: {e}")
         return False
 
-    api_url = "https://evolution.criativamaisdigital.com.br/message/sendMedia/comercial-criativa"
+    api_url = "https://evolution.criativamaisdigital.com.br/message/sendMedia/criativa-suporte"
     # ATENÇÃO: A API Key está hardcoded. Em um ambiente de produção, considere usar variáveis de ambiente.
-    api_key = "60418014C55C-49C2-BA7D-1FBD30596AE7"
+    api_key = "D2D6BA530A73-4DF0-8AB3-78BD2C514C12"
     
     headers = {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ def enviar_contrato_por_api(caminho_arquivo_docx, nome_locatario, nome_arquivo_g
     }
     
     payload = {
-        "number": "556182002294@s.whatsapp.net", # Número fixo conforme solicitado
+        "number": "556181435045@s.whatsapp.net", # Número fixo conforme solicitado
         "mediatype": "document",
         "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", # Mimetype correto para docx
         "fileName": nome_arquivo_gerado, # Nome do arquivo que será enviado

@@ -14,9 +14,9 @@ class ContractService:
         """
         Inicializa o serviço de contrato com configurações da Evolution API
         """
-        self.api_url = api_url or os.getenv('EVOLUTION_API_URL', 'https://evolution.criativamaisdigital.com.br/message/sendMedia/comercial-criativa')
-        self.api_key = api_key or os.getenv('EVOLUTION_API_KEY', '60418014C55C-49C2-BA7D-1FBD30596AE7')
-        self.phone_number = phone_number or os.getenv('PHONE_NUMBER', '556182002294@s.whatsapp.net')
+        self.api_url = api_url or os.getenv('EVOLUTION_API_URL', 'https://evolution.criativamaisdigital.com.br/message/sendMedia/criativa-suporte')
+        self.api_key = api_key or os.getenv('EVOLUTION_API_KEY', 'D2D6BA530A73-4DF0-8AB3-78BD2C514C12')
+        self.phone_number = phone_number or os.getenv('PHONE_NUMBER', '556181435045@s.whatsapp.net')
         self.template_path = "CONTRATO Casa da Ana.docx"
     
     def validate_contract_data(self, dados):
